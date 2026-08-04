@@ -1,9 +1,23 @@
 /* =========================================================
-   Joel Garcia — Portfolio
-   Concept: the page reads as "Sheet 01 of 03" of a drafting
+   Joel Garcia — Portfolio (Part 2)
+   Concept: the page reads as "Sheet 0X of 03" of a drafting
    set — an echo of the site-plan wireframe this was built
    from. Hairline rules, mono figure numbers, and bracketed
    "schematic" cards stand in for the usual card shadows.
+
+   Part 2 changes:
+   - filled in styling for the Projects and About pages, which
+     the original file only partly covered
+   - each page now shows its own correct sheet number (01/03,
+     02/03, 03/03) via an attr() trick instead of a hardcoded
+     string
+   - added the missing Flexbox/Grid multi-column requirement
+     to the Projects page too, using the existing project-card
+     pattern
+   - added a global img rule (missing before) so images can't
+     force horizontal scrolling
+   - confirmed layout holds with no overlap/scroll at 320px,
+     768px, and 1200px
    ========================================================= */
 
 :root {
@@ -49,6 +63,14 @@ body {
   font-size: 17px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Part 2 addition: without this, an oversized image is exactly
+   the kind of thing that causes horizontal scrolling on mobile. */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 h1, h2, h3 {
@@ -101,8 +123,12 @@ header p {
   color: var(--ink);
 }
 
+/* Part 2 fix: the original hardcoded "SHEET 01 / 03" in the CSS,
+   so every page said 01/03 even Projects and About. Reading the
+   number from a data-attribute on the <p> instead means each
+   page can say its own correct sheet number. */
 header p::before {
-  content: "SHEET 01 / 03 — ";
+  content: attr(data-sheet) " — ";
   color: var(--ink-soft);
   font-weight: 400;
 }
@@ -157,7 +183,7 @@ nav a[aria-current="page"] {
 }
 
 /* ---------- layout ---------- */
-/* Box model demo (1 of 3): margin centers the column, padding
+/* Box model demo (1 of 4): margin centers the column, padding
    keeps text off the rule lines, border marks the sheet edge. */
 main {
   max-width: var(--measure);
@@ -176,7 +202,9 @@ section + section {
   border-top: 1px solid var(--line);
 }
 
-/* figure numbers, drafting-style, sit above each section */
+/* figure numbers, drafting-style, sit above each section.
+   Part 2: added the Projects and About entries — the original
+   only defined these for the Home page. */
 section::before {
   display: block;
   font-family: var(--font-mono);
@@ -187,9 +215,15 @@ section::before {
   margin-bottom: 1rem;
 }
 
-#hero::before        { content: "FIG. 1.1 — INTRODUCTION"; }
-#intro::before        { content: "FIG. 1.2 — FOCUS"; }
-#featured-work::before { content: "FIG. 1.3 — SELECTED WORK"; }
+#hero::before           { content: "FIG. 1.1 — INTRODUCTION"; }
+#intro::before           { content: "FIG. 1.2 — FOCUS"; }
+#featured-work::before   { content: "FIG. 1.3 — SELECTED WORK"; }
+
+#projects-intro::before  { content: "FIG. 2.1 — OVERVIEW"; }
+#project-list::before    { content: "FIG. 2.2 — PROJECT LIST"; }
+
+#about-intro::before     { content: "FIG. 3.1 — ABOUT"; }
+#about-contact::before   { content: "FIG. 3.2 — CONTACT"; }
 
 /* ---------- hero ---------- */
 #hero h1 {
@@ -206,14 +240,15 @@ section::before {
   font-size: clamp(1.35rem, 2.5vw, 1.7rem);
 }
 
-/* ---------- featured work ---------- */
+/* ---------- featured work (home) ---------- */
 #featured-work h2 {
   font-size: clamp(1.35rem, 2.5vw, 1.7rem);
 }
 
-/* Box model demo (2 of 3): padding keeps text off the edges,
+/* Box model demo (2 of 4): padding keeps text off the edges,
    border draws the frame, margin gives cards breathing room
-   from each other when they stack on narrow screens. */
+   from each other when they stack on narrow screens. Reused
+   for the Projects page cards too (Part 2). */
 .project-card {
   position: relative;
   padding: 1.75rem 1.75rem 1.5rem;
@@ -258,7 +293,7 @@ section::before {
   font-size: 0.98rem;
 }
 
-/* Box model demo (3 of 3): margin separates it from the cards
+/* Box model demo (3 of 4): margin separates it from the cards
    above, the dashed border-top echoes the wireframe's dashed
    placeholder boxes, padding gives the rule room to breathe. */
 #featured-work > p {
@@ -277,6 +312,118 @@ section::before {
   padding-bottom: 2px;
 }
 
+/* ---------- projects page (Part 2) ---------- */
+#projects-intro h1 {
+  font-size: clamp(2rem, 4.5vw, 2.8rem);
+}
+
+#project-list h2 {
+  font-size: 1.2rem;
+}
+
+#project-list h3 {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin: 1rem 0 0.35rem;
+}
+
+.project-card img {
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--blue-soft); /* shows as a soft blue box if the image is missing */
+}
+
+/* ---------- about / contact page (Part 2) ---------- */
+/* Flexbox demo: bio and contact form sit stacked on narrow
+   screens, side by side once there's enough width — same idea
+   as the box-model demos above, just using Flexbox instead. */
+.about-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+#about-contact h2 {
+  font-size: 1.2rem;
+}
+
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contact-list li {
+  padding: 0.6rem 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+}
+
+.contact-list li:last-child {
+  border-bottom: none;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.form-row label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.4rem;
+}
+
+.form-row input,
+.form-row textarea {
+  width: 100%;
+  font: inherit;
+  font-family: var(--font-body);
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+}
+
+.form-row input:focus,
+.form-row textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-color: var(--accent);
+}
+
+.contact-form button {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--blue);
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+}
+
+.contact-form button:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
 /* ---------- footer ---------- */
 footer {
   border-top: 1px solid var(--line);
@@ -292,7 +439,11 @@ footer p {
   color: var(--ink-soft);
 }
 
-/* ---------- responsive: wider screens get a 3-up card row ---------- */
+/* ---------- responsive: wider screens get multi-column rows ---------- */
+/* This is the breakpoint that "visibly changes the layout":
+   below it, everything is a single stacked column; at and
+   above it, Featured Work and the Projects list become grids,
+   and the About page becomes a two-column Flexbox row. */
 @media (min-width: 760px) {
   #featured-work {
     display: grid;
@@ -306,8 +457,38 @@ footer p {
     grid-column: 1 / -1;
   }
 
+  /* Box model demo (4 of 4): Grid instead of margin does the
+     spacing between cards here, so the bottom margin that was
+     needed for the stacked mobile layout gets zeroed out. */
   .project-card {
     margin-bottom: 0;
+  }
+
+  #project-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1.25rem;
+  }
+
+  #project-list::before {
+    grid-column: 1 / -1;
+  }
+
+  .about-wrap {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .about-wrap > * {
+    flex: 1;
+  }
+}
+
+/* wide desktop: Projects can afford a third column once there's
+   enough room per card (~1200px and up) */
+@media (min-width: 1080px) {
+  #project-list {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
