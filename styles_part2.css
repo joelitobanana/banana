@@ -17,8 +17,10 @@
   --ink-soft: #4a5568;     /* secondary text */
   --paper: #eeede6;        /* page background */
   --paper-raised: #f7f5f0; /* cards, inputs — one step lighter than paper */
-  --line: #d6d2c6;         /* hairline rules / borders */
-  --signal: #c1440e;       /* accent — used for emphasis, focus, hover */
+  --line: #c3bdac;         /* hairline rules / borders */
+  --signal: #c1440e;       /* accent — decorative only: borders, focus rings, hover fills behind dark text */
+  --signal-text: #a83c0d;  /* accent, darkened for AA text contrast on paper/paper-raised (5.4:1+) */
+  --signal-on-dark: #e07a45; /* accent, lightened for AA text contrast on the ink header/footer bands (5.3:1+) */
 
   /* Type */
   --font-display: "Fraunces", Georgia, serif;
@@ -72,8 +74,46 @@ a {
 }
 
 ::selection {
-  background: var(--signal);
+  background: var(--signal-text);
   color: var(--paper);
+}
+
+/* Visually hidden but available to assistive tech / keyboard focus */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip-navigation link: first focusable element on every page */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-2);
+  z-index: 100;
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: var(--space-2);
+}
+
+main:focus {
+  outline: none;
 }
 
 /* ---- Base ------------------------------------------------------------- */
@@ -125,29 +165,31 @@ header {
   background: var(--ink);
   color: var(--paper);
   padding: var(--space-3);
-}
-
-header p {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   row-gap: var(--space-1);
   column-gap: var(--space-2);
+}
+
+header p {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.05rem;
   letter-spacing: 0.01em;
 }
 
-/* Surface the data-sheet="SHEET 0X / 03" attribute as a stamped tag */
-header p::after {
-  content: attr(data-sheet);
+/* Decorative sheet-number tag. aria-hidden in the HTML — it's letterhead
+   flourish, not wayfinding info (nav already marks the current page via
+   aria-current), so it's hidden from assistive tech rather than read aloud
+   as a confusing run-on string after the site name. */
+.sheet-tag {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.14em;
-  color: var(--signal);
-  border: 1px solid var(--signal);
+  color: var(--signal-on-dark);
+  border: 1px solid var(--signal-on-dark);
   border-radius: var(--radius);
   padding: 3px 8px;
   text-transform: uppercase;
@@ -182,8 +224,8 @@ nav a {
 nav a:hover,
 nav a:focus-visible,
 nav a[aria-current="page"] {
-  color: var(--signal);
-  border-bottom-color: var(--signal);
+  color: var(--signal-text);
+  border-bottom-color: var(--signal-text);
 }
 
 /* ---- Main / sections --------------------------------------------------- */
@@ -235,9 +277,9 @@ h2 {
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--signal);
+  color: var(--signal-text);
   text-decoration: none;
-  border-bottom: 1px solid var(--signal);
+  border-bottom: 1px solid var(--signal-text);
 }
 
 #featured-work p a:hover,
@@ -321,7 +363,7 @@ h2 {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--signal);
+  color: var(--signal-text);
 }
 
 #project-list .project-card h3::before {
@@ -372,12 +414,12 @@ h2 {
 
 .contact-list a {
   text-decoration: none;
-  border-bottom: 1px solid var(--signal);
+  border-bottom: 1px solid var(--signal-text);
 }
 
 .contact-list a:hover,
 .contact-list a:focus-visible {
-  color: var(--signal);
+  color: var(--signal-text);
 }
 
 .contact-form {
@@ -385,11 +427,65 @@ h2 {
   flex-direction: column;
 }
 
+/* Error/success summary — announced via role="alert" in the HTML.
+   :not(:empty) means it only takes up space once JS has something to say. */
+.form-status {
+  display: none;
+}
+
+.form-status:not(:empty) {
+  display: block;
+  margin-bottom: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--signal-text);
+  border-left: 4px solid var(--signal-text);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  font-size: 0.9rem;
+}
+
+.form-status.is-success {
+  border-color: var(--ink);
+  border-left-color: var(--ink);
+}
+
+.form-status a {
+  color: var(--signal-text);
+}
+
+.form-status ul {
+  list-style: disc;
+  padding-left: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+/* Groups the related contact fields into one labelled region —
+   the same "common region" treatment as the project cards. */
+fieldset {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  padding: var(--space-3);
+}
+
+legend {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  padding: 0 var(--space-1);
+}
+
 .form-row {
   display: flex;
   flex-direction: column;
   gap: 6px;
   margin-bottom: var(--space-3);
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
 }
 
 .form-row label {
@@ -425,6 +521,30 @@ h2 {
   box-shadow: 0 0 0 2px rgba(193, 68, 14, 0.15);
 }
 
+.form-row .required-flag {
+  color: var(--signal-text);
+}
+
+/* Error state: color is never the only cue — border weight doubles and
+   an icon + text message appears, so the state reads without color vision. */
+.form-row.has-error input,
+.form-row.has-error textarea {
+  border-color: var(--signal-text);
+  border-width: 2px;
+}
+
+.field-error {
+  display: block;
+  min-height: 1em;
+  margin-top: 4px;
+  font-size: 0.82rem;
+  color: var(--signal-text);
+}
+
+.field-error:empty {
+  display: none;
+}
+
 .contact-form button {
   align-self: flex-start;
   font-family: var(--font-mono);
@@ -442,8 +562,8 @@ h2 {
 
 .contact-form button:hover,
 .contact-form button:focus-visible {
-  background: var(--signal);
-  border-color: var(--signal);
+  background: var(--signal-text);
+  border-color: var(--signal-text);
 }
 
 /* ---- Footer -------------------------------------------------------------- */

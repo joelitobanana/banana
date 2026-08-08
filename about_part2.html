@@ -11,8 +11,11 @@
 </head>
 <body>
 
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
   <header>
-    <p data-sheet="SHEET 03 / 03">Joel Garcia</p>
+    <p>Joel Garcia</p>
+    <span class="sheet-tag" aria-hidden="true">SHEET 03 / 03</span>
   </header>
 
   <nav>
@@ -23,11 +26,14 @@
     </ul>
   </nav>
 
-  <main>
+  <main id="main-content" tabindex="-1">
 
     <section id="about-intro">
       <h1>About</h1>
       <p>
+        Placeholder bio paragraph — a couple of sentences about your
+        background, what you're currently focused on, and what kind of
+        work or opportunities you're looking for.
       </p>
     </section>
 
@@ -41,28 +47,60 @@
             collaborations, questions, or just to say hi.
           </p>
           <ul class="contact-list">
-            <li>Email: <a href="mailto:you@example.com">you@example.com</a></li>
-            <li>GitHub: <a href="https://github.com/yourusername">github.com/yourusername</a></li>
-            <li>LinkedIn: <a href="https://linkedin.com/in/yourusername">linkedin.com/in/yourusername</a></li>
+            <li>Email: <a href="mailto:you@example.com">joelgarciafeliz@gmail.com</a></li>
+            <li>GitHub: <a href="https://github.com/yourusername">https://github.com/joelitobanana</a></li>
+            <li>LinkedIn: <a href="https://linkedin.com/in/yourusername">https://www.linkedin.com/in/joelgarciafeliz/</a></li>
           </ul>
         </div>
 
         <div>
           <h2>Send a message</h2>
-          <!-- placeholder form — not wired up to anything yet -->
-          <form class="contact-form">
-            <div class="form-row">
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" placeholder="Your name">
-            </div>
-            <div class="form-row">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="you@example.com">
-            </div>
-            <div class="form-row">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" rows="4" placeholder="Say hello..."></textarea>
-            </div>
+          <!-- Client-side validation only — not wired to a backend yet. -->
+          <div id="form-status" class="form-status" role="alert" tabindex="-1"></div>
+          <form class="contact-form" id="contact-form" novalidate>
+            <fieldset>
+              <legend>Your details</legend>
+
+              <div class="form-row">
+                <label for="name">Name <span class="required-flag" aria-hidden="true">*</span></label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Your name"
+                  required
+                  aria-required="true"
+                  aria-describedby="name-error">
+                <span class="field-error" id="name-error"></span>
+              </div>
+
+              <div class="form-row">
+                <label for="email">Email <span class="required-flag" aria-hidden="true">*</span></label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  required
+                  aria-required="true"
+                  aria-describedby="email-error">
+                <span class="field-error" id="email-error"></span>
+              </div>
+
+              <div class="form-row">
+                <label for="message">Message <span class="required-flag" aria-hidden="true">*</span></label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="4"
+                  placeholder="Say hello..."
+                  required
+                  aria-required="true"
+                  aria-describedby="message-error"></textarea>
+                <span class="field-error" id="message-error"></span>
+              </div>
+            </fieldset>
+
             <button type="submit">Send</button>
           </form>
         </div>
@@ -75,6 +113,84 @@
   <footer>
     <p>&copy; 2026 Joel Garcia. Built for Homework 1, Part 2.</p>
   </footer>
+
+  <script>
+    (function () {
+      const form = document.getElementById('contact-form');
+      const status = document.getElementById('form-status');
+
+      const fields = [
+        { id: 'name', message: 'Please enter your name.' },
+        { id: 'email', message: 'Please enter a valid email address.' },
+        { id: 'message', message: 'Please enter a message.' }
+      ];
+
+      function setFieldError(id, message) {
+        const input = document.getElementById(id);
+        const errorEl = document.getElementById(id + '-error');
+        const row = input.closest('.form-row');
+        if (message) {
+          row.classList.add('has-error');
+          input.setAttribute('aria-invalid', 'true');
+          errorEl.textContent = message;
+        } else {
+          row.classList.remove('has-error');
+          input.setAttribute('aria-invalid', 'false');
+          errorEl.textContent = '';
+        }
+      }
+
+      function validate() {
+        const errors = [];
+        fields.forEach(function (field) {
+          const input = document.getElementById(field.id);
+          const valid = input.checkValidity() && input.value.trim() !== '';
+          setFieldError(field.id, valid ? '' : field.message);
+          if (!valid) errors.push(field);
+        });
+        return errors;
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const errors = validate();
+
+        status.classList.remove('is-success');
+
+        if (errors.length > 0) {
+          const items = errors
+            .map(function (field) {
+              return '<li><a href="#' + field.id + '">' + field.message + '</a></li>';
+            })
+            .join('');
+          status.innerHTML =
+            'Please fix ' + errors.length + ' error' + (errors.length > 1 ? 's' : '') +
+            ' before sending:<ul>' + items + '</ul>';
+          // role="alert" announces the summary immediately; focus then moves
+          // to the first invalid field so keyboard/screen-reader users can
+          // fix it right away without hunting for it.
+          document.getElementById(errors[0].id).focus();
+        } else {
+          const name = document.getElementById('name').value.trim();
+          status.classList.add('is-success');
+          status.innerHTML = 'Thanks, ' + name + ' — your message looks good. ' +
+            '(This form is a front-end demo and isn\u2019t connected to a backend yet.)';
+          status.focus();
+          form.reset();
+          fields.forEach(function (field) { setFieldError(field.id, ''); });
+        }
+      });
+
+      // Clear a field's error as soon as it becomes valid again.
+      fields.forEach(function (field) {
+        document.getElementById(field.id).addEventListener('input', function () {
+          if (this.checkValidity() && this.value.trim() !== '') {
+            setFieldError(field.id, '');
+          }
+        });
+      });
+    })();
+  </script>
 
 </body>
 </html>
