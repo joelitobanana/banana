@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interaction Log — Joel Garcia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles_part2.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header>
+    <p>Joel Garcia</p>
+    <span class="sheet-tag" aria-hidden="true">SHEET 04 / 04</span>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects_part2.html">Projects</a></li>
+      <li><a href="about_part2.html">About / Contact</a></li>
+      <li><a href="interactive-demo.html" aria-current="page">Interaction Log</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+
+    <section id="log-intro">
+      <h1>Interaction Log</h1>
+      <p>
+        A small appendix sheet demonstrating three pieces of front-end
+        interactivity: a button that rewrites content, an input that
+        changes style live as you type, and a working list you can add
+        to and clear.
+      </p>
+    </section>
+
+    <section id="field-note">
+      <h2>01 — Field note generator</h2>
+      <p class="eyebrow">Click to pull a new note from the log</p>
+      <p id="note-text" class="note-display">
+        Click the button below to draw a note from the log.
+      </p>
+      <button type="button" id="note-button" class="btn">Draw a field note</button>
+    </section>
+
+    <section id="ink-weight">
+      <h2>02 — Ink weight</h2>
+      <p class="eyebrow">Type below — the sample line darkens and thickens the more you write</p>
+      <div class="form-row">
+        <label for="ink-input">Write a line</label>
+        <input
+          type="text"
+          id="ink-input"
+          name="ink-input"
+          placeholder="Start typing…"
+          autocomplete="off">
+      </div>
+      <p id="ink-sample" class="ink-sample">Your line will appear here.</p>
+    </section>
+
+    <section id="punch-list">
+      <h2>03 — Punch list</h2>
+      <p class="eyebrow">Add items to track, mark them done, or remove them</p>
+      <form id="punch-form" class="punch-form" novalidate>
+        <div class="form-row">
+          <label for="punch-input">New item</label>
+          <input
+            type="text"
+            id="punch-input"
+            name="punch-input"
+            placeholder="e.g. Fix contrast on hover state"
+            autocomplete="off">
+        </div>
+        <button type="submit" class="btn">Add item</button>
+      </form>
+      <ul id="punch-items" class="punch-items"></ul>
+      <p id="punch-empty" class="punch-empty">No items yet — add one above.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Joel Garcia. Interaction log — added for the JS interactivity assignment.</p>
+  </footer>
+
+  <script src="interactive-demo.js"></script>
+
+</body>
+</html>

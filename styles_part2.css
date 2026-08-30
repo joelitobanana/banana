@@ -263,7 +263,8 @@ h2 {
 #hero p,
 #intro p,
 #projects-intro p,
-#about-intro p {
+#about-intro p,
+#log-intro p {
   color: var(--ink-soft);
   max-width: 60ch;
   margin-top: var(--space-2);
@@ -545,7 +546,8 @@ legend {
   display: none;
 }
 
-.contact-form button {
+.contact-form button,
+.btn {
   align-self: flex-start;
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -561,9 +563,113 @@ legend {
 }
 
 .contact-form button:hover,
-.contact-form button:focus-visible {
+.contact-form button:focus-visible,
+.btn:hover,
+.btn:focus-visible {
   background: var(--signal-text);
   border-color: var(--signal-text);
+}
+
+/* ---- Interaction log (about/contact-style eyebrow + three widgets) ---- */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--signal-text);
+  margin-bottom: var(--space-2);
+}
+
+/* Widget 1: field note generator */
+.note-display {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  color: var(--ink);
+  font-size: 1.02rem;
+  margin-bottom: var(--space-2);
+  min-height: 1.6em;
+}
+
+/* Widget 2: ink weight */
+.ink-sample {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  padding: var(--space-3);
+  min-height: 1.6em;
+  color: var(--ink-soft);
+  font-weight: 400;
+  transition: color 0.15s ease, font-weight 0.05s ease;
+}
+
+/* Widget 3: punch list */
+.punch-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.punch-form .form-row {
+  flex: 1 1 240px;
+  margin-bottom: 0;
+}
+
+.punch-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.punch-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+}
+
+.punch-item span {
+  flex: 1;
+}
+
+.punch-item.is-done span {
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+
+.punch-item .done-button,
+.punch-item .remove-button {
+  padding: 6px 12px;
+  font-size: 0.65rem;
+}
+
+.punch-item .remove-button {
+  background: var(--paper);
+  color: var(--signal-text);
+  border: 1px solid var(--signal-text);
+}
+
+.punch-item .remove-button:hover,
+.punch-item .remove-button:focus-visible {
+  background: var(--signal-text);
+  color: var(--paper);
+}
+
+.punch-empty {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.punch-empty.is-hidden {
+  display: none;
 }
 
 /* ---- Footer -------------------------------------------------------------- */
