@@ -19,7 +19,11 @@
   </header>
 
   <nav>
-    <ul>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-nav">
+      <span class="sr-only">Toggle navigation menu</span>
+      <span class="nav-toggle-icon" aria-hidden="true"></span>
+    </button>
+    <ul id="primary-nav">
       <li><a href="index.html">Home</a></li>
       <li><a href="projects_part2.html">Projects</a></li>
       <li><a href="about_part2.html">About / Contact</a></li>
@@ -88,6 +92,7 @@
     <p>&copy; 2026 Joel Garcia. Interaction log — added for the JS interactivity assignment.</p>
   </footer>
 
+  <script src="nav-toggle.js"></script>
   <script src="interactive-demo.js"></script>
 
 </body>

@@ -201,6 +201,12 @@ nav {
   border-bottom: 1px solid var(--line);
 }
 
+/* Hamburger toggle — only rendered/shown at mobile widths; the nav list
+   is always visible at tablet+ so the button has nothing to do there. */
+.nav-toggle {
+  display: none;
+}
+
 nav ul {
   display: flex;
   flex-wrap: wrap;
@@ -672,6 +678,74 @@ legend {
   display: none;
 }
 
+/* ---- GitHub snapshot (about page — fetch() bonus) ---------------------- */
+.github-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  min-height: 96px;
+}
+
+.github-status {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.github-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+}
+
+.github-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.github-bio {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+.github-stats {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin-top: var(--space-1);
+}
+
+.github-link {
+  display: inline-block;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--signal-text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--signal-text);
+}
+
+.github-link:hover,
+.github-link:focus-visible {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.github-error {
+  color: var(--signal-text);
+  font-size: 0.9rem;
+}
+
 /* ---- Footer -------------------------------------------------------------- */
 footer {
   background: var(--ink);
@@ -682,6 +756,83 @@ footer {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.06em;
+}
+
+/* ==========================================================================
+   Mobile nav toggle (below 768px only — the ul is always visible at
+   tablet+ widths, so the button and collapse behavior are scoped here)
+   ========================================================================== */
+@media (max-width: 767px) {
+  nav {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: var(--space-2) var(--space-3);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+
+  .nav-toggle-icon,
+  .nav-toggle-icon::before,
+  .nav-toggle-icon::after {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--ink);
+  }
+
+  .nav-toggle-icon {
+    position: relative;
+    transition: background-color 0.15s ease;
+  }
+
+  .nav-toggle-icon::before,
+  .nav-toggle-icon::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    transition: transform 0.15s ease;
+  }
+
+  .nav-toggle-icon::before {
+    top: -6px;
+  }
+
+  .nav-toggle-icon::after {
+    top: 6px;
+  }
+
+  .nav-toggle[aria-expanded="true"] .nav-toggle-icon {
+    background: transparent;
+  }
+
+  .nav-toggle[aria-expanded="true"] .nav-toggle-icon::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .nav-toggle[aria-expanded="true"] .nav-toggle-icon::after {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  nav ul {
+    display: none;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  nav ul.is-open {
+    display: flex;
+  }
 }
 
 /* ==========================================================================

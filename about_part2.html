@@ -19,7 +19,11 @@
   </header>
 
   <nav>
-    <ul>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-nav">
+      <span class="sr-only">Toggle navigation menu</span>
+      <span class="nav-toggle-icon" aria-hidden="true"></span>
+    </button>
+    <ul id="primary-nav">
       <li><a href="index.html">Home</a></li>
       <li><a href="projects_part2.html">Projects</a></li>
       <li><a href="about_part2.html" aria-current="page">About / Contact</a></li>
@@ -109,6 +113,14 @@
       </div>
     </section>
 
+    <section id="github-snapshot">
+      <h2>GitHub snapshot</h2>
+      <p class="eyebrow">Live data pulled from the GitHub API</p>
+      <div id="github-card" class="github-card" aria-live="polite">
+        <p class="github-status">Loading GitHub profile…</p>
+      </div>
+    </section>
+
   </main>
 
   <footer>
@@ -192,6 +204,9 @@
       });
     })();
   </script>
+
+  <script src="nav-toggle.js"></script>
+  <script src="github-card.js"></script>
 
 </body>
 </html>
