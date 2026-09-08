@@ -93,6 +93,19 @@
               </div>
 
               <div class="form-row">
+                <label for="subject">Subject <span class="required-flag" aria-hidden="true">*</span></label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  placeholder="What's this about?"
+                  required
+                  aria-required="true"
+                  aria-describedby="subject-error">
+                <span class="field-error" id="subject-error"></span>
+              </div>
+
+              <div class="form-row">
                 <label for="message">Message <span class="required-flag" aria-hidden="true">*</span></label>
                 <textarea
                   id="message"
@@ -132,10 +145,31 @@
       const form = document.getElementById('contact-form');
       const status = document.getElementById('form-status');
 
+      // Basic format check: something@something.something — this is the
+      // one field (email) validated for correct format, not just presence.
+      function isValidEmailFormat(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      }
+
       const fields = [
-        { id: 'name', message: 'Please enter your name.' },
-        { id: 'email', message: 'Please enter a valid email address.' },
-        { id: 'message', message: 'Please enter a message.' }
+        {
+          id: 'name',
+          emptyMessage: 'Please enter your name.'
+        },
+        {
+          id: 'email',
+          emptyMessage: 'Please enter your email address.',
+          formatCheck: isValidEmailFormat,
+          formatMessage: 'Please enter a valid email address — it needs an "@" and a domain, like name@example.com.'
+        },
+        {
+          id: 'subject',
+          emptyMessage: 'Please enter a subject.'
+        },
+        {
+          id: 'message',
+          emptyMessage: 'Please enter a message.'
+        }
       ];
 
       function setFieldError(id, message) {
@@ -153,13 +187,27 @@
         }
       }
 
+      // Returns an error message string for this field, or '' if it's valid.
+      // Checks emptiness first, then format (when the field defines one).
+      function getFieldError(field) {
+        const input = document.getElementById(field.id);
+        const value = input.value.trim();
+
+        if (value === '') {
+          return field.emptyMessage;
+        }
+        if (field.formatCheck && !field.formatCheck(value)) {
+          return field.formatMessage;
+        }
+        return '';
+      }
+
       function validate() {
         const errors = [];
         fields.forEach(function (field) {
-          const input = document.getElementById(field.id);
-          const valid = input.checkValidity() && input.value.trim() !== '';
-          setFieldError(field.id, valid ? '' : field.message);
-          if (!valid) errors.push(field);
+          const message = getFieldError(field);
+          setFieldError(field.id, message);
+          if (message) errors.push(field);
         });
         return errors;
       }
@@ -173,7 +221,8 @@
         if (errors.length > 0) {
           const items = errors
             .map(function (field) {
-              return '<li><a href="#' + field.id + '">' + field.message + '</a></li>';
+              const message = getFieldError(field);
+              return '<li><a href="#' + field.id + '">' + message + '</a></li>';
             })
             .join('');
           status.innerHTML =
@@ -194,12 +243,15 @@
         }
       });
 
-     
+      // Live-correct: once a field already shows an error, re-check it on
+      // every keystroke so the message updates or clears the moment the
+      // person fixes it, without needing to submit again.
       fields.forEach(function (field) {
-        document.getElementById(field.id).addEventListener('input', function () {
-          if (this.checkValidity() && this.value.trim() !== '') {
-            setFieldError(field.id, '');
-          }
+        const input = document.getElementById(field.id);
+        input.addEventListener('input', function () {
+          const row = input.closest('.form-row');
+          if (!row.classList.contains('has-error')) return;
+          setFieldError(field.id, getFieldError(field));
         });
       });
     })();
